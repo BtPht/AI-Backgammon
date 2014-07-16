@@ -1,11 +1,13 @@
-bertrand.so : possibles.o evaluation.o backgammon.o
-	gcc -shared -O2 -o bertrand.so backgammon.o possibles.o evaluation.o
-	
-backgammon.o : backgammon.c
-	gcc -Wall -pedantic -fPIC -O2 -c backgammon.c
+OBJS = possibles.o evaluation.o backgammon.o
+CC = gcc
+CFLAGS = -Wall -pedantic -fPIC -O2 -std=c99
 
-evaluation.o : evaluation.c
-	gcc -Wall -pedantic -fPIC -O2 -c evaluation.c
-	
-possibles.o : possibles.c
-	gcc -Wall -pedantic -fPIC -O2 -c possibles.c
+
+bertrand.so : $(OBJS)
+	$(CC) -shared -O2 -o libiabackgammon.so $(OBJS)
+
+%.o : %.c
+	$(CC) $(CFLAGS) -c $<
+
+clean :
+	rm *.o *.so
