@@ -1,3 +1,6 @@
+#ifndef BACKGAMMON_H
+#define BACKGAMMON_H
+
 #include <stdbool.h>
 
 /**
@@ -179,3 +182,6 @@ typedef bool (*fpTakeDouble)(const sGameState * const);
  */
 //void makeDecision(const sGameState * const gameState, sMove moves[4], unsigned int lastTimeError);
 typedef void (*fpMakeDecision)(const sGameState * const, sMove[4], unsigned int);
+
+#endif
+
