@@ -1,134 +1,181 @@
-
-
-// Représente un joueur
-typedef enum
-{
-	EPlayer1,	// Joueur 1 -> le joueur courant pour la stratégie
-	EPlayer2	// Joueur 2
-} EPlayer;
-
-// Structure de représentation d'une zone du jeu
-typedef struct
-{
-	EPlayer player;			// Joueur propriétaire des pions
-	unsigned int nb_checkers;	// Nombre de pion du joueur sur la zone
-} SZone;
-
-// Enumeration des zones pour le tableau points
-typedef enum
-{
-	EPos_1=0,
-	EPos_2,
-	EPos_3,
-	EPos_4,
-	EPos_5,
-	EPos_6,
-	EPos_7,
-	EPos_8,
-	EPos_9,
-	EPos_10,
-	EPos_11,
-	EPos_12,
-	EPos_13,
-	EPos_14,
-	EPos_15,
-	EPos_16,
-	EPos_17,
-	EPos_18,
-	EPos_19,
-	EPos_20,
-	EPos_21,
-	EPos_22,
-	EPos_23,
-	EPos_24,
-	EPos_OutP1,
-	EPos_BarP1,
-	EPos_OutP2,
-	EPos_BarP2
-} EPosition;
-
-// Structure de représentation du jeu avec son plateau et les dés
-typedef struct
-{
-	SZone zones[28];		// Tableau contenants les zones où les pions peuvent se trouver, indexés par des EPosition
-	unsigned int die1,die2;		// Les dés de jeu
-	unsigned int score,scoreP2;	// Les scores des joueurs
-	unsigned int stake;		// Mise courante de la partie
-} SGameState;
-
-// Structure de représentation d'un mouvement
-typedef struct
-{
-	EPosition src_point;
-	EPosition dest_point;
-} SMove;
-
-/////////// Focntions à utiliser
-// Les prototypes en commentaires sont à implémenter dans la librairie
-// Les types pointeur de fonction dans l'application
+#include <stdbool.h>
 
 /**
- * Initialiser la librairie
+ * @name ePlayer
+ * @typedef enum
+ * @details Enumerate the players
+ */
+typedef enum
+{
+        ePlayer1,	// Player 1 -> The current player
+        ePlayer2	// Player 2 -> The opponent
+} ePlayer;
+
+/**
+ * @name sZone
+ * @typedef struct
+ * @details Strcut representing the zones of the game
+ */
+typedef struct
+{
+        ePlayer player;			// Owner of the checkers
+        unsigned int nb_checkers;	// Number of checkers
+} sZone;
+
+/**
+ * @name ePosition
+ * @typedef enum
+ * @details Enumerate the zones on the board
+ */
+typedef enum
+{
+        ePos_1=0,
+        ePos_2,
+        ePos_3,
+        ePos_4,
+        ePos_5,
+        ePos_6,
+        ePos_7,
+        ePos_8,
+        ePos_9,
+        ePos_10,
+        ePos_11,
+        ePos_12,
+        ePos_13,
+        ePos_14,
+        ePos_15,
+        ePos_16,
+        ePos_17,
+        ePos_18,
+        ePos_19,
+        ePos_20,
+        ePos_21,
+        ePos_22,
+        ePos_23,
+        ePos_24,
+        ePos_OutP1,
+        ePos_BarP1,
+        ePos_OutP2,
+        ePos_BarP2
+} ePosition;
+
+/**
+ * @name sGameState
+ * @typedef struct
+ * @details Struct representing the current state of the game
+ */
+typedef struct
+{
+        sZone zones[28];                // Array Containing the zones where checkers can be
+        unsigned int die1,die2;
+        unsigned int scoreP1,scoreP2;	// Player's scores
+        unsigned int bet;
+} sGameState;
+
+/**
+ * @name sMove
+ * @typedef struct
+ * @details Struct representing a move
+ */
+typedef struct
+{
+        ePosition src_point;
+        ePosition dest_point;
+} sMove;
+
+/**
+ * @note Fonctions visible outside the library
+ *
+ * @note These functions must be implemented by the creator of the IA
+ *
+ * @note These functions must be called by the user of the library
+ *
+ * @warning Any error in the call order will lead to undefined behavior
+ *
+ * @warning The signatures commented are the ones the IA must implement
+ * the typedefs are only used by the caller of the library
+ */
+
+/**
+ * @name initLibrary
+ * @details Initialize the library
  * @param char name[50]
- *	nom associé à la librairie
+ *	name associated to the library
  */
-//void InitLibrary(char name[50]);
-typedef void (*pfInitLibrary)(char[50]);
+//void initLibrary(char name[50]);
+typedef void (*fpInitLibrary)(char[50]);
 
 /**
- * Initialiser l'IA pour un match
+ * @name startMatch
+ * @details Initialize the IA for a full match
  * @param const unsigned int target_score
- *	score cible pour gagner un match
+ *	number of rounds to win the match
  */
-//void StartMatch(const unsigned int target_score);
-typedef void (*pfStartMatch)(const unsigned int);
+//void startMatch(const unsigned int target_score);
+typedef void (*fpStartMatch)(const unsigned int);
 
 /**
- * Initialiser l'IA pour une manche (d'un match)
+ * @name startGame
+ * @details Initialize the IA for a round
  */
-//void StartGame();
-typedef void (*pfStartGame)();
+//void startGame();
+typedef void (*fpStartGame)();
 
 /**
- * Fin d'une manche (d'un match)
+ * @name endGame
+ * @details Notify the end of a round
+ * @remarks The signature of this function doesn't include the winner of the round
+ * the IA can still know who won by remembering its last move
+ *
+ * @warning The signature may however change in a later update
+ *
  */
-//void EndGame();
-typedef void (*pfEndGame)();
+//void endGame();
+typedef void (*fpEndGame)();
 
 /**
- * Fin d'un match
+ * @name endMatch
+ * @details Notify the end of a match
+ * @remarks The signature of this function doesn't include the winner of the match
+ * but the IA can still know who won by remembering its last move and score
+ *
+ * @warning The signature may however change in a later update
+ *
  */
-//void EndMatch();
-typedef void (*pfEndMatch)();
+//void endMatch();
+typedef void (*fpEndMatch)();
 
 /**
- * Doubler la mise
- * @param const SGameState * const gameState
- *	l'état du jeu courant
- * @return int
- *	vrai si on propose de doubler : faux sinon
+ * @name doubleStack
+ * @details Ask if the IA wants to double the bet
+ * @param const sGameState * const gameState
+ *	current state of the game
+ * @return bool
+ *	true if the player wants to double the bet
  */
-//int DoubleStack(const SGameState * const gameState);
-typedef int (*pfDoubleStack)(const SGameState * const);
+//bool doubleBet(const sGameState * const gameState);
+typedef bool (*fpDoubleStack)(const sGameState * const);
 
 /**
- * Accepter ou refuser la nouvelle mise
- * @param const SGameState * const gameState
- *	l'état du jeu courant
- * @return int
- *	vrai si on accepte la nouvelle mise ; faux sinon
+ * @name tkeDouble
+ * @details Accept or refuse the new bet
+ * @param const sGameState * const gameState
+ *	current state of the game
+ * @return bool
+ *	True if the IA accept the new bet
  */
-//int TakeDouble(const SGameState * const gameState);
-typedef int (*pfTakeDouble)(const SGameState * const);
+//bool takeDouble(const sGameState * const gameState);
+typedef bool (*fpTakeDouble)(const sGameState * const);
 
 /**
- * Prise de décision de la part de l'IA
- * @param const SGameState * const gameState
- *	l'état du jeu courant
- * @param SMove moves[4]
- *	tableau des mouvements à effectuer par l'IA
+ * @name makeDecision
+ * @details Ask the IA its moving choices
+ * @param const sGameState * const gameSMtate
+ *	Current state of the game
+ * @param sMove moves[4]
+ *	Array of the moves
  * @param unsigned int lastTimeError
- *	vrai si la dernière action a causée une erreur
+ *	True if the last move triggered an error (i.e illegal move)
  */
-//void MakeDecision(const SGameState * const gameState, SMove moves[4], unsigned int lastTimeError);
-typedef void (*pfMakeDecision)(const SGameState * const, SMove[4], unsigned int);
+//void makeDecision(const sGameState * const gameState, sMove moves[4], unsigned int lastTimeError);
+typedef void (*fpMakeDecision)(const sGameState * const, sMove[4], unsigned int);
