@@ -1,24 +1,32 @@
 #ifndef EVALUATION_H_INCLUDED
-	#define EVALUATION_H_INCLUDED
+#define EVALUATION_H_INCLUDED
 
-typedef struct plateaux_joues
+#include "backgammon.h"
+#include "backgammon_private.h"
+
+#include "possibles.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct played_board
 {
-	SZone  plateau[28];
-	struct plateaux_joues* suivant;
-}plateaux_joues;
+        sZone  plateau[28];
+        struct played_board* suivant;
+}played_board;
 
 typedef struct
 {
-	signed char triangle[28];
-	unsigned int win;
-	unsigned int loose;
+        signed char triangle[28];
+        unsigned int win;
+        unsigned int loose;
 }b_ligne;
 
 typedef struct decatree
 {
-	struct decatree *suivant[13];
-	unsigned int win;
-	unsigned int loose;
+        struct decatree *suivant[13];
+        unsigned int win;
+        unsigned int loose;
 }decatree;
 
 decatree *create_decatree(FILE* ressource);
@@ -26,18 +34,12 @@ decatree *add_ligne(decatree *arbre,b_ligne *ligne,int prof);
 
 coups_possibles *eval(FILE* ressource, const coups_possibles *liste);
 
-int existe2(decatree *arbre, const SZone plateau[28], float *note, int *sens);
-int existe(FILE *ressource, const SZone plateau[28], float *note,int *sens);
+int existe2(decatree *arbre, const sZone plateau[28], float *note, int *sens);
+int existe(FILE *ressource, const sZone plateau[28], float *note,int *sens);
 
-void add_plateau(FILE* ressource, const SZone plateau[28], const EPlayer gagnant);
-plateaux_joues *memorise(plateaux_joues *liste, const SZone plateau[28]);
+void add_plateau(FILE* ressource, const sZone plateau[28], const ePlayer winner);
+played_board *memorise(played_board *liste, const sZone plateau[28]);
 
-void free_memorise(plateaux_joues *liste);
-
-/* TODO
-
-	commenter les .h
-
-*/
+void free_memorise(played_board *liste);
 
 #endif
