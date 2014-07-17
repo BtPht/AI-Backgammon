@@ -40,7 +40,7 @@ decatree *add_ligne(decatree *arbre,b_ligne *ligne,int prof)
 		for(i=0;i<13;i++) nouveau->next[i] = NULL;
 		nouveau->win = 0;
 		nouveau->loose = 0;
-		nouveau->next[ligne->triangle[prof]+6] = add_ligne(nouveau->next[ligne->triangle[prof]+6],ligne,prof+1) ;
+		nouveau->next[ligne->triangle[prof]+6] = add_ligne(nouveau->next[ligne->triangle[prof]+6],ligne,prof+1);
 
 		arbre = nouveau;
 	}

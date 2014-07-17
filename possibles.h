@@ -109,7 +109,7 @@ inline int is_bear_off(const sZone board[28])
         +(board[ePos_5].nb_checkers*(board[ePos_5].player == ePlayer1))
         +(board[ePos_6].nb_checkers*(board[ePos_6].player == ePlayer1))
         +board[ePos_OutP1].nb_checkers)
-        == 15) ;
+        == 15);
 }
 
 #endif

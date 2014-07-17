@@ -88,19 +88,19 @@ coups_possibles* liste_coups_possibles(coups_possibles *liste_finale,const coup1
                                 }
                                 nouveau->first_movement.dest_point = coup1_current->first_movement.dest_point;
                                 nouveau->first_movement.src_point = coup1_current->first_movement.src_point;
-                                nouveau->second_mouvement.dest_point = -1 ;
-                                nouveau->second_mouvement.src_point = -1 ;
+                                nouveau->second_mouvement.dest_point = -1;
+                                nouveau->second_mouvement.src_point = -1;
 
-                                nouveau->next = NULL ;
+                                nouveau->next = NULL;
                                 if(tail == NULL)
                                 {
-                                        tail = nouveau ;
-                                        liste_finale = nouveau ;
+                                        tail = nouveau;
+                                        liste_finale = nouveau;
                                 }
                                 else
                                 {
-                                        tail->next = nouveau ;
-                                        tail = nouveau ;
+                                        tail->next = nouveau;
+                                        tail = nouveau;
                                 }
                         }
                 }
@@ -123,16 +123,16 @@ coups_possibles* liste_coups_possibles(coups_possibles *liste_finale,const coup1
                                 nouveau->second_mouvement.dest_point = coup2_current->second_mouvement.dest_point;
                                 nouveau->second_mouvement.src_point = coup2_current->second_mouvement.src_point;
 
-                                nouveau->next = NULL ;
+                                nouveau->next = NULL;
                                 if(tail == NULL)
                                 {
-                                        tail = nouveau ;
-                                        liste_finale = nouveau ;
+                                        tail = nouveau;
+                                        liste_finale = nouveau;
                                 }
                                 else
                                 {
-                                        tail->next = nouveau ;
-                                        tail = nouveau ;
+                                        tail->next = nouveau;
+                                        tail = nouveau;
                                 }
 
                         }
