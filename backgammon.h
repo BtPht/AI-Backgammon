@@ -95,7 +95,7 @@ typedef struct
  *
  * @warning Any error in the call order will lead to undefined behavior
  *
- * @warning The signatures commented are the ones the IA must implement
+ * @note The signatures commented are the ones the IA must implement
  * the typedefs are only used by the caller of the library
  */
 
@@ -130,7 +130,7 @@ typedef void (*fpStartGame)();
  * @remarks The signature of this function doesn't include the winner of the round
  * the IA can still know who won by remembering its last move
  *
- * @warning The signature may however change in a later update
+ * @note The signature may however change in a later update
  *
  */
 //void endGame();
@@ -142,7 +142,7 @@ typedef void (*fpEndGame)();
  * @remarks The signature of this function doesn't include the winner of the match
  * but the IA can still know who won by remembering its last move and score
  *
- * @warning The signature may however change in a later update
+ * @note The signature may however change in a later update
  *
  */
 //void endMatch();
@@ -179,6 +179,9 @@ typedef bool (*fpTakeDouble)(const sGameState * const);
  *	Array of the moves
  * @param unsigned int lastTimeError
  *	True if the last move triggered an error (i.e illegal move)
+ * @warning The moves parameter gives the IA access to a part of the memomry
+ * which belongs to the library users. This is too dangerous and the
+ * signature MUST be changed
  */
 //void makeDecision(const sGameState * const gameState, sMove moves[4], unsigned int lastTimeError);
 typedef void (*fpMakeDecision)(const sGameState * const, sMove[4], unsigned int);
