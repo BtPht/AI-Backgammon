@@ -11,8 +11,8 @@
 
 typedef struct played_board
 {
-        sZone  plateau[28];
-        struct played_board* suivant;
+        sZone  board[28];
+        struct played_board* next;
 }played_board;
 
 typedef struct
@@ -24,7 +24,7 @@ typedef struct
 
 typedef struct decatree
 {
-        struct decatree *suivant[13];
+        struct decatree *next[13];
         unsigned int win;
         unsigned int loose;
 }decatree;
@@ -34,11 +34,11 @@ decatree *add_ligne(decatree *arbre,b_ligne *ligne,int prof);
 
 coups_possibles *eval(FILE* ressource, const coups_possibles *liste);
 
-int existe2(decatree *arbre, const sZone plateau[28], float *note, int *sens);
-int existe(FILE *ressource, const sZone plateau[28], float *note,int *sens);
+int existe2(decatree *arbre, const sZone board[28], float *note, int *sens);
+int existe(FILE *ressource, const sZone board[28], float *note,int *sens);
 
-void add_plateau(FILE* ressource, const sZone plateau[28], const ePlayer winner);
-played_board *memorise(played_board *liste, const sZone plateau[28]);
+void add_plateau(FILE* ressource, const sZone board[28], const ePlayer winner);
+played_board *memorise(played_board *liste, const sZone board[28]);
 
 void free_memorise(played_board *liste);
 

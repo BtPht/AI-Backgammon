@@ -45,12 +45,12 @@ void endGame()
 
         debut=time(NULL);
 
-        /*Pour mémoire J1 contient le dernier plateau mémorisé
+        /*Pour mémoire J1 contient le dernier board mémorisé
          *        donc soit j'ai rangé tous mes pions et l'arbitre a appelé EndGame()
          *        juste aprés et donc j'ai gagné, soit je n'ai pas finit et l'appel
          *        a été fait suite à la vistoire du mauvais d'en face.
          */
-        if(global_jeu1->plateau[ePos_OutP1].nb_checkers == 15) winner=ePlayer1;
+        if(global_jeu1->board[ePos_OutP1].nb_checkers == 15) winner=ePlayer1;
         else winner=ePlayer2;
 
         tree = create_decatree(global_ressource);
@@ -58,7 +58,7 @@ void endGame()
         current = global_jeu1;
         while(current != NULL)
         {
-                if(existe2(tree,current->plateau,&note,&sens) != existe(global_ressource,current->plateau,&note,&sens))
+                if(existe2(tree,current->board,&note,&sens) != existe(global_ressource,current->board,&note,&sens))
                         printf("___ ERROR __");
 
         }
@@ -66,8 +66,8 @@ void endGame()
         /*current = global_jeu2;
          *while(current != NULL)
          *{
-         *      add_plateau(global_ressource,current->plateau,winner);
-         *      current = current->suivant;
+         *      add_board(global_ressource,current->board,winner);
+         *      current = current->next;
          *}
         */
 
@@ -119,9 +119,9 @@ void makeDecision(const sGameState * const gameState, sMove moves[4], unsigned i
         }
 
         /*TODO dans le cas ou le J1 est le premier à jouer,
-         *        cette instruction fait stocker le plateau initial ce qui n'a pas d'interet
+         *        cette instruction fait stocker le board initial ce qui n'a pas d'interet
          *        il faudrait évetuellement le vérifier quelque part
-         *        Autre soucit, on n'aura jamais le plateau final si J2 gagne*/
+         *        Autre soucit, on n'aura jamais le board final si J2 gagne*/
         global_jeu2 = memorise(global_jeu2,gameState->zones);
 
         list = public_list_coups_possibles(gameState->zones,gameState->die1,gameState->die2);
@@ -131,9 +131,9 @@ void makeDecision(const sGameState * const gameState, sMove moves[4], unsigned i
          *        while(current != NULL && lastTimeError != 0)
          *        {
          *                printf("coup1 : %d to %d\tcoup2 : %d to %d\n",
-         *                1+current->premier_mouvement.src_point,1+current->premier_mouvement.dest_point,
+         *                1+current->first_movement.src_point,1+current->first_movement.dest_point,
          *                1+current->second_mouvement.src_point,1+current->second_mouvement.dest_point);
-         *                current = current->suivant;
+         *                current = current->next;
 }
 */
 
@@ -146,8 +146,8 @@ void makeDecision(const sGameState * const gameState, sMove moves[4], unsigned i
 
                 best = eval(global_ressource,list);
 
-                moves[0].src_point = best->premier_mouvement.src_point;
-                moves[0].dest_point = best->premier_mouvement.dest_point;
+                moves[0].src_point = best->first_movement.src_point;
+                moves[0].dest_point = best->first_movement.dest_point;
                 moves[1].src_point = best->second_mouvement.src_point;
                 moves[1].dest_point = best->second_mouvement.dest_point;
 
@@ -161,24 +161,24 @@ void makeDecision(const sGameState * const gameState, sMove moves[4], unsigned i
                                 for(a=0;a<28;a++)
                                 {
                                         printf("|");
-                                        if(best->plateau[a].player == ePlayer2) printf("-");
-                                        printf("%d|",best->plateau[a].nb_checkers);
+                                        if(best->board[a].player == ePlayer2) printf("-");
+                                        printf("%d|",best->board[a].nb_checkers);
                                 }
                                 printf("\n");
                         }
                         /*on est obligé d'utiliser une autre list en cas de double
                          *                        sinon on perdrait la première et on ne pourrait pas la libérer
                          *                        et on ne peut pas la librérer avant car best pointe sur l'un de ses éléments*/
-                        list_double = public_list_coups_possibles(best->plateau,gameState->die1,gameState->die2);
+                        list_double = public_list_coups_possibles(best->board,gameState->die1,gameState->die2);
 
                         /*
                          *                        current = list_double;
                          *                        while(current != NULL && lastTimeError != 0)
                          *                        {
                          *                                printf("coup1 : %d to %d\tcoup2 : %d to %d\n",
-                         *                                1+current->premier_mouvement.src_point,1+current->premier_mouvement.dest_point,
+                         *                                1+current->first_movement.src_point,1+current->first_movement.dest_point,
                          *                                1+current->second_mouvement.src_point,1+current->second_mouvement.dest_point);
-                         *                                current = current->suivant;
+                         *                                current = current->next;
                 }
                 */
 
@@ -189,25 +189,25 @@ void makeDecision(const sGameState * const gameState, sMove moves[4], unsigned i
 
                                 best2 = eval(global_ressource,list_double);
 
-                                moves[2].src_point = best2->premier_mouvement.src_point;
-                                moves[2].dest_point = best2->premier_mouvement.dest_point;
+                                moves[2].src_point = best2->first_movement.src_point;
+                                moves[2].dest_point = best2->first_movement.dest_point;
                                 moves[3].src_point = best2->second_mouvement.src_point;
                                 moves[3].dest_point = best2->second_mouvement.dest_point;
 
-                                global_jeu1 = memorise(global_jeu1,best2->plateau);
+                                global_jeu1 = memorise(global_jeu1,best2->board);
                         }
                 }
 
-                if(list_double == NULL) global_jeu1 = memorise(global_jeu1,best->plateau);
+                if(list_double == NULL) global_jeu1 = memorise(global_jeu1,best->board);
         }
 
         if(lastTimeError != 0)
         {
                 printf("\n");
-                printf("\t1er :%d vers %d\n",1+moves[0].src_point,1+moves[0].dest_point);
-                printf("\t2nd :%d vers %d\n",1+moves[1].src_point,1+moves[1].dest_point);
-                printf("\td- 1er :%d vers %d\n",1+moves[2].src_point,1+moves[2].dest_point);
-                printf("\td- 2nd :%d vers %d\n",1+moves[3].src_point,1+moves[3].dest_point);
+                printf("\t1er :%d toward %d\n",1+moves[0].src_point,1+moves[0].dest_point);
+                printf("\t2nd :%d toward %d\n",1+moves[1].src_point,1+moves[1].dest_point);
+                printf("\td- 1er :%d toward %d\n",1+moves[2].src_point,1+moves[2].dest_point);
+                printf("\td- 2nd :%d toward %d\n",1+moves[3].src_point,1+moves[3].dest_point);
 
                 scanf("%d",&a);
         }
