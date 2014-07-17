@@ -1,5 +1,5 @@
 OBJS = possibles.o evaluation.o backgammon.o
-CC = gcc
+CC = clang
 CFLAGS = -Wall -pedantic -fPIC -O2 -std=c99
 
 
