@@ -5,7 +5,7 @@ This code is from an educational project I did few years ago. This is a legacy
 code that needs serious cleaning and refactoring. It would not be wise to use
 it as it.
 
-Three distinguished parts can be identified :
+Three distinct parts can be identified :
         1- The interface defining how an external code should use this IA
                 * backgammon.h
         2- Functions creating a list of all the movements possibles for a
