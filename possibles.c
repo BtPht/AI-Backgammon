@@ -1,4 +1,5 @@
 #include "backgammon.h"
+#include "backgammon_private.h"
 #include "possibles.h"
 
 coups_possibles* public_liste_coups_possibles(const sZone board[28],const int die1,const int die2)
@@ -46,7 +47,6 @@ coups_possibles* public_liste_coups_possibles(const sZone board[28],const int di
 
 coups_possibles* liste_coups_possibles(coups_possibles *liste_finale,const coup1 *liste1)
 {
-        int i;
         coup1 *coup1_current;
         coup2 *coup2_current;
         coups_possibles *current, *tail, *nouveau=NULL;
@@ -74,7 +74,7 @@ coups_possibles* liste_coups_possibles(coups_possibles *liste_finale,const coup1
                         if(!redondant(coup1_current->first_board,liste_finale))
                         {
                                 nouveau = (coups_possibles*)malloc(sizeof(coups_possibles));
-                                        for(i=0;i<28;i++)
+                                        for(unsigned int i=0;i<28;i++)
                                 {
                                         nouveau->board[i].nb_checkers = coup1_current->first_board[i].nb_checkers;
                                         nouveau->board[i].player = coup1_current->first_board[i].player;
@@ -104,7 +104,7 @@ coups_possibles* liste_coups_possibles(coups_possibles *liste_finale,const coup1
                         {
                                 nouveau = (coups_possibles*)malloc(sizeof(coups_possibles));
 
-                                for(i=0;i<28;i++)
+                                for(unsigned int i=0;i<28;i++)
                                 {
                                         nouveau->board[i].nb_checkers = coup2_current->final_board[i].nb_checkers;
                                         nouveau->board[i].player = coup2_current->final_board[i].player;
@@ -190,13 +190,13 @@ coup2* coups_autorises2(const sZone board[28],const int die)
 
         if(board[ePos_BarP1].nb_checkers != 0)
         {/*il y au moins un pion prisonnier*/
-                if(VERBOSE) printf("\tUn pion est bloqué : ");
+                if(VERBOSE) printf("\tA checker is locked : ");
                 if(board[24-die].nb_checkers == 0 || board[24-die].player == ePlayer1)
                 {/*sortie autorisée car pas de pions ou pions alliés*/
                         mouvement.src_point = ePos_BarP1;
                         mouvement.dest_point = 24-die;
                         liste = add_coup2(board,mouvement,liste,SIMPLE);
-                        if(VERBOSE) printf("\tsortie simple\n");
+                        if(VERBOSE) printf("\tsimple exit of a checker\n");
                         /*printf("\t\t2eme : %d to %d\n",1+mouvement.src_point,1+mouvement.dest_point);*/
                 }
                 else if(board[24-die].nb_checkers == 1)

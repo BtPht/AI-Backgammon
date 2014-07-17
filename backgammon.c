@@ -104,16 +104,15 @@ int takeDouble(const sGameState * const gameState)
 void makeDecision(const sGameState * const gameState, sMove moves[4], unsigned int lastTimeError)
 {
         coups_possibles *list=NULL , *list_double=NULL, *best,*best2;
-        int a;
 
         if(lastTimeError != 0)
         {
                 printf("dés %d\t%d\n",gameState->die1,gameState->die2);
-                for(a=0;a<28;a++)
+                for(unsigned int i=0;i<28;i++)
                 {
                         printf("|");
-                        if(gameState->zones[a].player == ePlayer2) printf("-");
-                        printf("%d|",gameState->zones[a].nb_checkers);
+                        if(gameState->zones[i].player == ePlayer2) printf("-");
+                        printf("%d|",gameState->zones[i].nb_checkers);
                 }
                 printf("\n");
         }
@@ -158,11 +157,11 @@ void makeDecision(const sGameState * const gameState, sMove moves[4], unsigned i
                         {
                                 printf("----- double ----\n");
                                 printf("dés %d\t%d\n",gameState->die1,gameState->die2);
-                                for(a=0;a<28;a++)
+                                for(unsigned int i=0;i<28;i++)
                                 {
                                         printf("|");
-                                        if(best->board[a].player == ePlayer2) printf("-");
-                                        printf("%d|",best->board[a].nb_checkers);
+                                        if(best->board[i].player == ePlayer2) printf("-");
+                                        printf("%d|",best->board[i].nb_checkers);
                                 }
                                 printf("\n");
                         }
@@ -208,8 +207,6 @@ void makeDecision(const sGameState * const gameState, sMove moves[4], unsigned i
                 printf("\t2nd :%d toward %d\n",1+moves[1].src_point,1+moves[1].dest_point);
                 printf("\td- 1er :%d toward %d\n",1+moves[2].src_point,1+moves[2].dest_point);
                 printf("\td- 2nd :%d toward %d\n",1+moves[3].src_point,1+moves[3].dest_point);
-
-                scanf("%d",&a);
         }
 
         free_coups_possibles(list);
