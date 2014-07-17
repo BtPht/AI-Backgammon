@@ -1,12 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "backgammon.h"
-
 #include "possibles.h"
-
-#define VERBOSE 0
-
 
 coups_possibles* public_liste_coups_possibles(const sZone board[28],const int die1,const int die2)
 {

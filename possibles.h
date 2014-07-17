@@ -1,5 +1,8 @@
-#ifndef POSSIBLE_H
-#define POSSIBLE_H
+#ifndef POSSIBLE_H_INCLUDED
+#define POSSIBLE_H_INCLUDED
+
+#include <stdio.h>
+#include <stdlib.h>
 
 typedef enum type_deplacement
 {

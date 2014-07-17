@@ -1,5 +1,5 @@
-#ifndef BACKGAMMON_H
-#define BACKGAMMON_H
+#ifndef BACKGAMMON_H_INCLUDED
+#define BACKGAMMON_H_INCLUDED
 
 #include <stdbool.h>
 
