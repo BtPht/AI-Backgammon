@@ -32,6 +32,7 @@ typedef struct
 */
 typedef enum
 {
+        ePos_ND=-1,
         ePos_1=0,
         ePos_2,
         ePos_3,

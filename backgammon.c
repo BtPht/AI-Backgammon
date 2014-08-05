@@ -86,7 +86,7 @@ void endGame()
 void endMatch()
 {
         fclose(global_ressource);
-        printf("Tout est terminé\n");
+        printf("Eveerything is terminated\n");
 
 }
 
@@ -123,7 +123,7 @@ void makeDecision(const sGameState * const gameState, sMove moves[4], unsigned i
          *        Autre soucit, on n'aura jamais le board final si J2 gagne*/
         global_jeu2 = memorise(global_jeu2,gameState->zones);
 
-        list = public_list_coups_possibles(gameState->zones,gameState->die1,gameState->die2);
+        list = list_possible_moves_public(gameState->zones,gameState->die1,gameState->die2);
 
         /*
          *        current = list;
@@ -168,7 +168,7 @@ void makeDecision(const sGameState * const gameState, sMove moves[4], unsigned i
                         /*on est obligé d'utiliser une autre list en cas de double
                          *                        sinon on perdrait la première et on ne pourrait pas la libérer
                          *                        et on ne peut pas la librérer avant car best pointe sur l'un de ses éléments*/
-                        list_double = public_list_coups_possibles(best->board,gameState->die1,gameState->die2);
+                        list_double = list_possible_moves_public(best->board,gameState->die1,gameState->die2);
 
                         /*
                          *                        current = list_double;

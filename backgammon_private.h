@@ -8,4 +8,6 @@
 #include <string.h>
 #include <time.h>
 
+#define VERBOSE 0
+
 #endif

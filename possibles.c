@@ -2,7 +2,7 @@
 #include "backgammon_private.h"
 #include "possibles.h"
 
-coups_possibles* public_liste_coups_possibles(const sZone board[28],const int die1,const int die2)
+coups_possibles* list_possible_moves_public(const sZone board[28],const int die1,const int die2)
 {
 
         coup1 *liste_possibles, *current1;
@@ -81,8 +81,8 @@ coups_possibles* liste_coups_possibles(coups_possibles *liste_finale,const coup1
                                 }
                                 nouveau->first_movement.dest_point = coup1_current->first_movement.dest_point;
                                 nouveau->first_movement.src_point = coup1_current->first_movement.src_point;
-                                nouveau->second_mouvement.dest_point = -1;
-                                nouveau->second_mouvement.src_point = -1;
+                                nouveau->second_mouvement.dest_point = ePos_ND;
+                                nouveau->second_mouvement.src_point = ePos_ND;
 
                                 nouveau->next = NULL;
                                 if(tail == NULL)
@@ -146,7 +146,7 @@ coups_possibles* du_simple_au_double(coups_possibles *liste)
         donc tant qu'on n'a pas ce cas on parcour toute la liste*/
         while(current != NULL && !(exist_double && exist_alone))
         {
-                if(current->second_mouvement.src_point == -1) exist_alone = 1;
+                if(current->second_mouvement.src_point == ePos_ND) exist_alone = 1;
                 else exist_double = 1;
 
                 current = current->next;
@@ -157,7 +157,7 @@ coups_possibles* du_simple_au_double(coups_possibles *liste)
         {
                 current= liste;
                 /*on supprime la séquence de premiers éléments non valides*/
-                while(current->second_mouvement.src_point == -1)
+                while(current->second_mouvement.src_point == ePos_ND)
                 {
                         liste = liste->next;
                         free(current);
@@ -167,7 +167,7 @@ coups_possibles* du_simple_au_double(coups_possibles *liste)
                 /*puis on parcour la liste en supprimant tous les coups simples*/
                 while(current->next != NULL)
                 {
-                        if(current->next->second_mouvement.src_point == -1)
+                        if(current->next->second_mouvement.src_point == ePos_ND)
                         {
                                 temp = current->next;
                                 current->next = current->next->next;
