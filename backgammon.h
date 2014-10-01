@@ -71,8 +71,8 @@ typedef enum
 typedef struct
 {
         sZone zones[28];                // Array Containing the zones where checkers can be
-        unsigned int die1,die2;
-        unsigned int scoreP1,scoreP2;	// Player's scores
+        unsigned int die1, die2;
+        unsigned int scoreP1, scoreP2;	// Player's scores
         unsigned int bet;
 } sGameState;
 

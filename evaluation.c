@@ -23,13 +23,13 @@ decatree *create_decatree(FILE* ressource)
 
         while(!feof(ressource))
         {
-                fread(&ligne,sizeof(b_ligne),1,ressource);
-                arbre = add_ligne(arbre,&ligne,0);
+                fread(&ligne, sizeof(b_ligne), 1, ressource);
+                arbre = add_ligne(arbre, &ligne, 0);
         }
         return arbre;
 }
 
-decatree *add_ligne(decatree *arbre,b_ligne *ligne,int prof)
+decatree *add_ligne(decatree *arbre, b_ligne *ligne, int prof)
 {
         decatree *nouveau;
 
@@ -39,7 +39,7 @@ decatree *add_ligne(decatree *arbre,b_ligne *ligne,int prof)
                 for(unsigned int i=0;i<13;i++) nouveau->next[i] = NULL;
                 nouveau->win = 0;
                 nouveau->loose = 0;
-                nouveau->next[ligne->triangle[prof]+6] = add_ligne(nouveau->next[ligne->triangle[prof]+6],ligne,prof+1);
+                nouveau->next[ligne->triangle[prof]+6] = add_ligne(nouveau->next[ligne->triangle[prof]+6], ligne, prof+1);
 
                 arbre = nouveau;
         }
@@ -55,7 +55,7 @@ decatree *add_ligne(decatree *arbre,b_ligne *ligne,int prof)
         }
         else if(arbre != NULL && prof != 28)
         {
-                arbre->next[ligne->triangle[prof]+6] = add_ligne(arbre->next[ligne->triangle[prof]+6],ligne,prof+1);
+                arbre->next[ligne->triangle[prof]+6] = add_ligne(arbre->next[ligne->triangle[prof]+6], ligne, prof+1);
         }
         else if(arbre != NULL && prof == 28)
         {
@@ -67,17 +67,17 @@ decatree *add_ligne(decatree *arbre,b_ligne *ligne,int prof)
         return arbre;
 }
 
-coups_possibles *eval(FILE* ressource,const coups_possibles *liste)
+possible_movements *eval(FILE* ressource, const possible_movements *liste)
 {
         int sens;
-        float note,max=0;
-        coups_possibles *best=NULL,*current;
+        float note, max=0;
+        possible_movements *best=NULL, *current;
 
-        current = (coups_possibles*) liste;
+        current = (possible_movements*) liste;
 
         while(current != NULL)
         {
-                if(existe(ressource,current->board,&note,&sens))
+                if(existe(ressource, current->board, &note, &sens))
                 {/*
                         cas ou le board a deja été joué
                         pas besoin de vérifier le sens, en effet la note est donnée
@@ -206,9 +206,9 @@ int existe2(decatree *arbre, const sZone board[28], float *note, int *sens)
 prend en paramètre le fichier de ressoureces
 le board à évaluer, la note si le board est trouvé
 */
-int existe(FILE *fichier,const sZone board[28] ,float *note,int *sens)
+int existe(FILE *fichier, const sZone board[28] , float *note, int *sens)
 {
-        int nb_pions,i,win,loose,b1,b2;
+        int nb_pions, i, win, loose, b1, b2;
         b_ligne ligne;
 
         fseek(fichier, 0, SEEK_SET);
@@ -218,7 +218,7 @@ int existe(FILE *fichier,const sZone board[28] ,float *note,int *sens)
                 b1=1;
                 b2=1;
                 i=0;
-                fread(&ligne,sizeof(b_ligne),1,fichier);
+                fread(&ligne, sizeof(b_ligne), 1, fichier);
                 while(i<=ePos_24 && (b1 || b2) )
                 {/* on vérifie que les 24 triangles sont bien identiques */
                         nb_pions = ligne.triangle[i];
@@ -298,31 +298,31 @@ int existe(FILE *fichier,const sZone board[28] ,float *note,int *sens)
         return 0;
 }
 
-void add_board(FILE* ressource,const sZone board[28] ,const ePlayer winner)
+void add_board(FILE* ressource, const sZone board[28] , const ePlayer winner)
 {
-        int sens,win,loose;
+        int sens, win, loose;
         float a;
         b_ligne ligne;
 
-        if(existe(ressource,board,&a,&sens))
+        if(existe(ressource, board, &a, &sens))
         {
-                fseek(ressource,-sizeof(int[2]),SEEK_CUR);
-                fread(&win,sizeof(win),1,ressource);
-                fread(&loose,sizeof(loose),1,ressource);
-                fseek(ressource,-sizeof(int[2]),SEEK_CUR);
+                fseek(ressource, -sizeof(int[2]), SEEK_CUR);
+                fread(&win, sizeof(win), 1, ressource);
+                fread(&loose, sizeof(loose), 1, ressource);
+                fseek(ressource, -sizeof(int[2]), SEEK_CUR);
                 if(sens == 1)
                 {
                         win+=(winner == ePlayer1);
                         loose+=(winner == ePlayer2);
-                        fwrite(&win,sizeof(win),1,ressource);
-                        fwrite(&loose,sizeof(loose),1,ressource);
+                        fwrite(&win, sizeof(win), 1, ressource);
+                        fwrite(&loose, sizeof(loose), 1, ressource);
                 }
                 else
                 {
                         win+=(winner == ePlayer2);
                         loose+=(winner == ePlayer1);
-                        fwrite(&win,sizeof(win),1,ressource);
-                        fwrite(&loose,sizeof(loose),1,ressource);
+                        fwrite(&win, sizeof(win), 1, ressource);
+                        fwrite(&loose, sizeof(loose), 1, ressource);
                 }
         }
         else
@@ -342,7 +342,7 @@ void add_board(FILE* ressource,const sZone board[28] ,const ePlayer winner)
                 ligne.loose = (winner == ePlayer2);
 
                 fseek(ressource, 0, SEEK_END);
-                fwrite(&ligne,sizeof(b_ligne),1,ressource);
+                fwrite(&ligne, sizeof(b_ligne), 1, ressource);
         }
 }
 

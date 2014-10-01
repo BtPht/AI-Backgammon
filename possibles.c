@@ -2,54 +2,53 @@
 #include "backgammon_private.h"
 #include "possibles.h"
 
-coups_possibles* list_possible_moves_public(const sZone board[28],const int die1,const int die2)
+possible_movements* list_possible_moves_public(const sZone board[28], const int die1, const int die2)
 {
 
         coup1 *liste_possibles, *current1;
-        coups_possibles *liste_finale=NULL;
+        possible_movements *liste_finale=NULL;
 
-        /*On etablit la liste des coups dé1 puis dé 2*/
+        /*On etablit la liste des coups dé 1 puis dé 2*/
 
-        liste_possibles = coups_autorises1(board,die1);
+        liste_possibles = coups_autorises1(board, die1);
 
         current1 = liste_possibles;
 
         while(current1 != NULL)
         {
                 /*printf("\t1er : %d to %d\n",1+current1->first_movement.src_point,1+current1->first_movement.dest_point);*/
-                current1->deuxieme_coup = coups_autorises2(current1->first_board,die2);
+                current1->deuxieme_coup = coups_autorises2(current1->first_board, die2);
                 current1 = current1->next;
         }
 
-        liste_finale = liste_coups_possibles(liste_finale,liste_possibles);
+        liste_finale = liste_possible_movements(liste_finale, liste_possibles);
 
         free_coup1(liste_possibles);
 
         /*Puis on étudie les coups en jouant les dés dans l'autre sens*/
-
-        liste_possibles = coups_autorises1(board,die2);
+        liste_possibles = coups_autorises1(board, die2);
 
         current1 = liste_possibles;
 
         while(current1 != NULL)
         {
                 /*printf("\t2-1er : %d to %d\n",1+current1->first_movement.src_point,1+current1->first_movement.dest_point);*/
-                current1->deuxieme_coup = coups_autorises2(current1->first_board,die1);
+                current1->deuxieme_coup = coups_autorises2(current1->first_board, die1);
                 current1 = current1->next;
         }
 
-        liste_finale = liste_coups_possibles(liste_finale,liste_possibles);
+        liste_finale = liste_possible_movements(liste_finale, liste_possibles);
 
         free_coup1(liste_possibles);
 
         return liste_finale;
 }
 
-coups_possibles* liste_coups_possibles(coups_possibles *liste_finale,const coup1 *liste1)
+possible_movements* liste_possible_movements(possible_movements *liste_finale, const coup1 *liste1)
 {
         coup1 *coup1_current;
         coup2 *coup2_current;
-        coups_possibles *current, *tail, *nouveau=NULL;
+        possible_movements *current, *tail, *nouveau=NULL;
 
         /*on fait un ajout en queue donc on commence par trouver le dernier élément*/
         if(liste_finale == NULL)
@@ -71,9 +70,9 @@ coups_possibles* liste_coups_possibles(coups_possibles *liste_finale,const coup1
                 coup2_current = coup1_current->deuxieme_coup;
                 if(coup2_current == NULL)
                 {
-                        if(!redondant(coup1_current->first_board,liste_finale))
+                        if(!redondant(coup1_current->first_board, liste_finale))
                         {
-                                nouveau = (coups_possibles*)malloc(sizeof(coups_possibles));
+                                nouveau = (possible_movements*)malloc(sizeof(possible_movements));
                                         for(unsigned int i=0;i<28;i++)
                                 {
                                         nouveau->board[i].nb_checkers = coup1_current->first_board[i].nb_checkers;
@@ -102,7 +101,7 @@ coups_possibles* liste_coups_possibles(coups_possibles *liste_finale,const coup1
                 {
                         if(!redondant(coup2_current->final_board,liste_finale))
                         {
-                                nouveau = (coups_possibles*)malloc(sizeof(coups_possibles));
+                                nouveau = (possible_movements*)malloc(sizeof(possible_movements));
 
                                 for(unsigned int i=0;i<28;i++)
                                 {
@@ -137,10 +136,10 @@ coups_possibles* liste_coups_possibles(coups_possibles *liste_finale,const coup1
         return liste_finale;
 }
 
-coups_possibles* du_simple_au_double(coups_possibles *liste)
+possible_movements* du_simple_au_double(possible_movements *liste)
 {
-        coups_possibles *current=liste,*temp=NULL;
-        int exist_double=0,exist_alone=0;
+        possible_movements *current=liste, *temp=NULL;
+        int exist_double=0, exist_alone=0;
 
         /*le seul cas problématique est le cas ou il a à la fois des simples et des doubles
         donc tant qu'on n'a pas ce cas on parcour toute la liste*/
@@ -181,7 +180,7 @@ coups_possibles* du_simple_au_double(coups_possibles *liste)
         return liste;
 }
 
-coup2* coups_autorises2(const sZone board[28],const int die)
+coup2* coups_autorises2(const sZone board[28], const int die)
 {
         int i;
 
@@ -195,7 +194,7 @@ coup2* coups_autorises2(const sZone board[28],const int die)
                 {/*sortie autorisée car pas de pions ou pions alliés*/
                         mouvement.src_point = ePos_BarP1;
                         mouvement.dest_point = 24-die;
-                        liste = add_coup2(board,mouvement,liste,SIMPLE);
+                        liste = add_coup2(board, mouvement, liste, SIMPLE);
                         if(VERBOSE) printf("\tsimple exit of a checker\n");
                         /*printf("\t\t2eme : %d to %d\n",1+mouvement.src_point,1+mouvement.dest_point);*/
                 }
@@ -203,7 +202,7 @@ coup2* coups_autorises2(const sZone board[28],const int die)
                 {/*il n'y a qu'un seul pion à l'adversaire*/
                         mouvement.src_point = ePos_BarP1;
                         mouvement.dest_point = 24-die;
-                        liste = add_coup2(board,mouvement,liste,PRISE);
+                        liste = add_coup2(board, mouvement, liste, PRISE);
                         if(VERBOSE) printf("\tsortie en prenant un pion ennemi\n");
                         /*printf("\t\t2eme : %d to %d\n",1+mouvement.src_point,1+mouvement.dest_point);*/
                 }
@@ -225,7 +224,7 @@ coup2* coups_autorises2(const sZone board[28],const int die)
                                                 if(VERBOSE) printf("\tOn fait un déplacement classique\n");
                                                 mouvement.src_point = i;
                                                 mouvement.dest_point = i-die;
-                                                liste = add_coup2(board,mouvement,liste,SIMPLE);
+                                                liste = add_coup2(board, mouvement, liste, SIMPLE);
                                                 /*printf("\t\t2eme : %d to %d\n",1+mouvement.src_point,1+mouvement.dest_point);*/
                                         }
                                         else if(board[i-die].nb_checkers == 1)
@@ -233,7 +232,7 @@ coup2* coups_autorises2(const sZone board[28],const int die)
                                                 if(VERBOSE) printf("\tOn capture un pion ennemi\n");
                                                 mouvement.src_point = i;
                                                 mouvement.dest_point = i-die;
-                                                liste = add_coup2(board,mouvement,liste,PRISE);
+                                                liste = add_coup2(board, mouvement, liste, PRISE);
                                                 /*printf("\t\t2eme : %d to %d\n",1+mouvement.src_point,1+mouvement.dest_point);*/
                                         }
                                         //le seul autre cas possible est plusieurs pions ennemis mais on ne peut alors pas jouer
@@ -241,12 +240,12 @@ coup2* coups_autorises2(const sZone board[28],const int die)
                                 else if( (i-die)< 0 && is_bear_off(board))
                                 {//le dé fait sortir et la sortie est autorisée
                                         if(VERBOSE) printf("On sort du board\n");
-                                        if(sortie_autorisee(board,i,die))
+                                        if(sortie_autorisee(board, i, die))
                                         {
                                                 if(VERBOSE) printf("\tOn fait sortir un pion, cool!\n");
                                                 mouvement.src_point = i;
                                                 mouvement.dest_point = ePos_OutP1;
-                                                liste = add_coup2(board,mouvement,liste,SIMPLE);
+                                                liste = add_coup2(board, mouvement, liste, SIMPLE);
                                                 /*printf("\t\t2eme : %d to %d\n",1+mouvement.src_point,1+mouvement.dest_point);*/
                                         }
                                 }
@@ -258,7 +257,7 @@ coup2* coups_autorises2(const sZone board[28],const int die)
         return liste;
 }
 
-coup2* add_coup2(const sZone origine[28], const sMove deplacement, coup2* liste,const type_deplacement type)
+coup2* add_coup2(const sZone origine[28], const sMove deplacement, coup2* liste, const type_deplacement type)
 {
         int i;
 
@@ -310,7 +309,7 @@ coup2* add_coup2(const sZone origine[28], const sMove deplacement, coup2* liste,
 
 }
 
-coup1* coups_autorises1(const sZone board[28],const int die)
+coup1* coups_autorises1(const sZone board[28], const int die)
 {
         int i;
 
@@ -324,14 +323,14 @@ coup1* coups_autorises1(const sZone board[28],const int die)
                 {//sortie autorisée car pas de pions ou pions alliés
                         mouvement.src_point = ePos_BarP1;
                         mouvement.dest_point = 24-die;
-                        liste = add_coup1(board,mouvement,liste,SIMPLE);
+                        liste = add_coup1(board, mouvement, liste, SIMPLE);
                         if(VERBOSE) printf("\tsortie simple\n");
                 }
                 else if(board[24-die].nb_checkers == 1)
                 {//il n'y a qu'un seul pion à l'adversaire
                         mouvement.src_point = ePos_BarP1;
                         mouvement.dest_point = 24-die;
-                        liste = add_coup1(board,mouvement,liste,PRISE);
+                        liste = add_coup1(board, mouvement, liste, PRISE);
                         if(VERBOSE) printf("\tsortie en prenant un pion ennemi\n");
                 }
                 else if(VERBOSE) printf("\tpas de sortie possible\n");
@@ -352,26 +351,26 @@ coup1* coups_autorises1(const sZone board[28],const int die)
                                                 if(VERBOSE) printf("\tOn fait un déplacement classique\n");
                                                 mouvement.src_point = i;
                                                 mouvement.dest_point = i-die;
-                                                liste = add_coup1(board,mouvement,liste,SIMPLE);
+                                                liste = add_coup1(board, mouvement, liste, SIMPLE);
                                         }
                                         else if(board[i-die].nb_checkers == 1)
                                         {//il n'y a qu'un seul pion à l'adversaire
                                                 if(VERBOSE) printf("\tOn capture un pion ennemi\n");
                                                 mouvement.src_point = i;
                                                 mouvement.dest_point = i-die;
-                                                liste = add_coup1(board,mouvement,liste,PRISE);
+                                                liste = add_coup1(board, mouvement, liste, PRISE);
                                         }
                                         //le seul autre cas possible est plusieurs pions ennemis mais on ne peut alors pas jouer
                                 }
                                 else if( (i-die)< 0 && is_bear_off(board))
                                 {//le dé fait sortir et la sortie est autorisée
                                         if(VERBOSE) printf("On sort du board\n");
-                                        if(sortie_autorisee(board,i,die))
+                                        if(sortie_autorisee(board, i, die))
                                         {
                                                 if(VERBOSE) printf("\tOn fait sortir un pion, cool!\n");
                                                 mouvement.src_point = i;
                                                 mouvement.dest_point = ePos_OutP1;
-                                                liste = add_coup1(board,mouvement,liste,SIMPLE);
+                                                liste = add_coup1(board, mouvement, liste, SIMPLE);
                                         }
                                         else if(VERBOSE) printf("pas de sortie possible\n");
                                 }
@@ -384,7 +383,7 @@ coup1* coups_autorises1(const sZone board[28],const int die)
 }
 
 
-coup1* add_coup1(const sZone origine[28], const sMove deplacement, coup1* liste,const type_deplacement type)
+coup1* add_coup1(const sZone origine[28], const sMove deplacement, coup1* liste, const type_deplacement type)
 {
         int i;
 
@@ -431,14 +430,14 @@ coup1* add_coup1(const sZone origine[28], const sMove deplacement, coup1* liste,
 
         //on relie au reste de la chaine
 
-        /*** L'ajout se fait en tête parcoups_possibles *liste simplicité mais n'a pour l'instant pas d'importance ***/
+        /*** L'ajout se fait en tête parpossible_movements *liste simplicité mais n'a pour l'instant pas d'importance ***/
         nouveau->next = liste;
 
         return nouveau;
 
 }
 
-int sortie_autorisee(const sZone board[28],const int pos,const int die)
+bool sortie_autorisee(const sZone board[28], const int pos, const int die)
 {
         int m;
 
@@ -462,9 +461,9 @@ int sortie_autorisee(const sZone board[28],const int pos,const int die)
         }
 }
 
-int redondant(const sZone board[28],const coups_possibles *liste)
+bool redondant(const sZone board[28], const possible_movements *liste)
 {
-        coups_possibles *current = (coups_possibles*)liste;
+        possible_movements *current = (possible_movements*)liste;
         int i;
         while(current != NULL)
         {
@@ -504,12 +503,12 @@ void free_coup1(coup1 *liste)
         }
 }
 
-void free_coups_possibles(coups_possibles *liste)
+void free_possible_movements(possible_movements *liste)
 {
         if(liste != NULL)
         {
                 if(liste->next != NULL)
-                        free_coups_possibles(liste->next);
+                        free_possible_movements(liste->next);
 
                 free(liste);
         }
